@@ -27,7 +27,7 @@ function App() {
 	const [category, setCategory] = useState<string>("");
 
 	const [activities, setActivities] = useState<ActivityArray>([]);
-	const [activity, setActivity] = useState<Activity>();
+	const [activity, setActivity] = useState<string>("");
 
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
@@ -42,14 +42,18 @@ function App() {
 						return item.name;
 					})
 				);
+				setCategory(response[0].name);
 			})
 			.catch((err) => console.error(err));
 	};
 
 	const getActivities = async () => {
-		fetch("https://api.ditchcarbon.com/v1.0/activities", options)
+		fetch(`https://api.ditchcarbon.com/v1.0/activities?name[]=${category}`, options)
 			.then((response) => response.json())
-			.then((response) => console.log(response))
+			.then((response) => {
+				console.log(response);
+				setActivities(response);
+			})
 			.catch((err) => console.error(err));
 	};
 
@@ -60,7 +64,7 @@ function App() {
 	useEffect(() => {
 		console.log(category);
 		getActivities();
-	}, [category]);
+	}, [category, categories]);
 
 	return (
 		<>
@@ -78,11 +82,11 @@ function App() {
 				)}
 			</select>
 			<select onChange={(e) => setActivity(e.target.value)}>
-				{activities.length !== 0 ? (
-					activities.map((activity) => {
+				{activities ? (
+					activities.map((activity, index) => {
 						return (
-							<option key={activity} value={activity}>
-								{activity}
+							<option key={activity.id} value={index}>
+								{activity.name.slice(-3).join(", ")}
 							</option>
 						);
 					})
