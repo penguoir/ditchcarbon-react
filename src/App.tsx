@@ -5,7 +5,7 @@ const options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
-		authorization: "Bearer 119807b0526cb12971d817ec34e60a8b",
+		authorization: "Bearer API_KEY",
 	},
 };
 
