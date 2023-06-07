@@ -12,3 +12,7 @@
 	--background: #242e34;
 	--highlight: #2ab77c;
 }
+
+* {
+	box-sizing: border-box;
+}
