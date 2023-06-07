@@ -1,7 +1,20 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField } from "@mui/material";
+import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
+import { createTheme } from "@mui/material/styles";
+import { purple } from "@mui/material/colors";
+
+const theme = createTheme({
+	palette: {
+		primary: {
+			main: purple[500],
+		},
+		secondary: {
+			main: "#f44336",
+		},
+	},
+});
 
 // template for fetch request
 const options = {
@@ -25,6 +38,20 @@ interface Activity {
 	available_declared_units: string[];
 }
 
+interface EmissionFactors {
+	ch4: number;
+	co2: number;
+	co2e: number | null;
+	n2o: number;
+  }
+interface AssessmentOfActivity {
+	region: string;
+	year: number;
+	declared_unit: string;
+	ghg_emission_factors: EmissionFactors;
+	source_url: string;
+}
+
 // activity array interface
 interface ActivityArray extends Array<Activity> {}
 
@@ -42,8 +69,14 @@ function App() {
 
 	const [region, setRegion] = useState<string>("");
 
+
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
+
+	const [volume, setVolume] = useState<number>(0);
+
+	const [co2Total, setCo2Total] = useState<number>(0);
+
 
 	const getCategories = async () => {
 		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level", options)
@@ -77,6 +110,23 @@ function App() {
 				setUnit(units[0]);
 				setYears(activities[activityIndex].available_years);
 				setYear(year);
+			})
+			.catch((err) => console.error(err));
+	};
+
+	const getAssessmentOfActivity = async () => {
+		fetch(
+			`https://api.ditchcarbon.com/v1.0/activities/${activities[activityIndex].id}/assessment?region=${region}&declared_unit=${unit}`,
+			options
+		)
+			.then((response) => response.json())
+			.then((response: AssessmentOfActivity) => {
+				console.log(response);
+				const factor =
+					response.ghg_emission_factors.co2e !== null
+						? response.ghg_emission_factors.co2e
+						: response.ghg_emission_factors.co2;
+				setCo2Total(factor * volume);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -184,6 +234,7 @@ function App() {
 				</Select>
 			</FormControl>
 			<FormControl>
+
 				<InputLabel id="year-select-label">Year</InputLabel>
 				<Select
 					id="year-select"
@@ -205,7 +256,39 @@ function App() {
 						<MenuItem key="loading">Select the year</MenuItem>
 					)}
 				</Select>
+
+				<InputLabel id="unit-select-label">Region</InputLabel>
+				<TextField
+					id="outlined-basic"
+					value={region}
+					variant="outlined"
+					onChange={(e) => setRegion(e.target.value)}
+				/>
+
 			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Volume</InputLabel>
+				<TextField
+					id="outlined-basic"
+					variant="outlined"
+					type={"number"}
+					value={volume}
+					onChange={(e) =>
+						setVolume(parseInt(e.target.value.toString()))
+					}
+				/>
+			</FormControl>
+			<br />
+			<Button
+				onClick={() => getAssessmentOfActivity()}
+				variant="outlined"
+			>
+				Calculate
+			</Button>
+			<br />
+			{co2Total !== 0 && (
+				<div id="co2-total">{co2Total} kg co2e total</div>
+			)}
 		</>
 	);
 }
