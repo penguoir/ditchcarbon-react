@@ -1,6 +1,6 @@
 import { FormControl } from "@mui/base";
 import { Select, InputLabel, MenuItem } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./css/App.css";
 
 // template for fetch request
@@ -8,7 +8,7 @@ const options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
-		authorization: "Bearer 119807b0526cb12971d817ec34e60a8b",
+		authorization: `Bearer ${import.meta.env.VITE_DITCH_CARBON_API_KEY}`,
 	},
 };
 
@@ -76,7 +76,7 @@ function App() {
 
 	useEffect(() => {
 		console.log(category);
-		getActivities();
+		category && getActivities();
 	}, [category, categories]);
 
 	return (
