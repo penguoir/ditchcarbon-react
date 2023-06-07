@@ -69,6 +69,9 @@ function App() {
 
 	const [region, setRegion] = useState<string>("");
 
+	const [years, setYears] = useState<number[]>([]);
+	const [year, setYear] = useState<number>();
+
 	const [volume, setVolume] = useState<number>(0);
 
 	const [co2Total, setCo2Total] = useState<number>(0);
@@ -103,6 +106,9 @@ function App() {
 				);
 				setUnits(activities[activityIndex].available_declared_units);
 				setUnit(units[0]);
+				setYears(activities[activityIndex].available_years);
+				console.log(activities[activityIndex])
+				setYear(years[0]);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -198,8 +204,8 @@ function App() {
 									e.target.value.toString()
 								);
 								setActivityIndex(index);
-								let current_activity = activities[index];
-								let activity_name = current_activity.name
+								const current_activity = activities[index];
+								const activity_name = current_activity.name
 									.slice(-3)
 									.join(", ");
 								setActivity(activity_name);
@@ -223,6 +229,7 @@ function App() {
 							)}
 						</Select>
 					</FormControl>
+
 					<FormControl>
 						<InputLabel id="unit-select-label">Unit</InputLabel>
 						<Select
@@ -249,7 +256,7 @@ function App() {
 						</Select>
 					</FormControl>
 					<FormControl>
-						<InputLabel id="unit-select-label">Region</InputLabel>
+						<InputLabel id="region-select-label">Region</InputLabel>
 						<TextField
 							id="outlined-basic"
 							value={region}
@@ -258,7 +265,7 @@ function App() {
 						/>
 					</FormControl>
 					<FormControl>
-						<InputLabel id="unit-select-label">Volume</InputLabel>
+						<InputLabel id="volume-select-label">Volume</InputLabel>
 						<TextField
 							id="outlined-basic"
 							variant="outlined"
@@ -268,6 +275,31 @@ function App() {
 								setVolume(parseInt(e.target.value.toString()))
 							}
 						/>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="year-select-label">Year</InputLabel>
+						<Select
+							id="year-select"
+							value={year}
+							label="Year"
+							onChange={(e) => {
+								setYear(Number(e.target.value));
+							}}
+						>
+							{years ? (
+								years.map((year, index) => {
+									return (
+										<MenuItem key={index} value={year}>
+											{year}
+										</MenuItem>
+									);
+								})
+							) : (
+								<MenuItem key="loading">
+									Select the year
+								</MenuItem>
+							)}
+						</Select>
 					</FormControl>
 					<br />
 					<Button
