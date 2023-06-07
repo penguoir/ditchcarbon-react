@@ -43,7 +43,7 @@ interface EmissionFactors {
 	co2: number;
 	co2e: number | null;
 	n2o: number;
-  }
+}
 interface AssessmentOfActivity {
 	region: string;
 	year: number;
@@ -144,112 +144,144 @@ function App() {
 
 	return (
 		<>
-			<FormControl>
-				<InputLabel id="category-select-label">Category</InputLabel>
-				<Select
-					id="category-select"
-					value={category}
-					label="Category"
-					onChange={(e) => setCategory(e.target.value)}
-				>
-					{categories.length !== 0 ? (
-						categories.map((category) => {
-							return (
-								<MenuItem key={category} value={category}>
-									{category}
-								</MenuItem>
-							);
-						})
-					) : (
-						<MenuItem key="loading">loading...</MenuItem>
-					)}
-				</Select>
-			</FormControl>
-			<FormControl>
-				<InputLabel id="activity-select-label">Activity</InputLabel>
-				<Select
-					id="activity-select"
-					value={activityIndex}
-					label="Activity"
-					onChange={(e) => {
-						console.log(e.target.value);
-						const index = parseInt(e.target.value.toString());
-						setActivityIndex(index);
-						let current_activity = activities[index];
-						let activity_name = current_activity.name
-							.slice(-3)
-							.join(", ");
-						setActivity(activity_name);
-					}}
-				>
-					{activities ? (
-						activities.map((activity, index) => {
-							return (
-								<MenuItem key={activity.id} value={index}>
-									{activity.name.slice(-3).join(", ")}
-								</MenuItem>
-							);
-						})
-					) : (
-						<MenuItem key="loading">Select a category</MenuItem>
-					)}
-				</Select>
-			</FormControl>
-			<FormControl>
-				<InputLabel id="unit-select-label">Unit</InputLabel>
-				<Select
-					id="unit-select"
-					value={unit}
-					label="Unit"
-					onChange={(e) => {
-						setUnit(e.target.value);
-					}}
-				>
-					{units ? (
-						units.map((unit, index) => {
-							return (
-								<MenuItem key={index} value={unit}>
-									{unit}
-								</MenuItem>
-							);
-						})
-					) : (
-						<MenuItem key="loading">Select a category</MenuItem>
-					)}
-				</Select>
-			</FormControl>
-			<FormControl>
-				<InputLabel id="unit-select-label">Region</InputLabel>
-				<TextField
-					id="outlined-basic"
-					value={region}
-					variant="outlined"
-					onChange={(e) => setRegion(e.target.value)}
+			<header>
+				<img
+					width="283"
+					height="38"
+					src="https://ditchcarbon.com/wp-content/uploads/2021/05/Group-119.svg"
+					alt=""
+					loading="lazy"
 				/>
-			</FormControl>
-			<FormControl>
-				<InputLabel id="unit-select-label">Volume</InputLabel>
-				<TextField
-					id="outlined-basic"
-					variant="outlined"
-					type={"number"}
-					value={volume}
-					onChange={(e) =>
-						setVolume(parseInt(e.target.value.toString()))
-					}
-				/>
-			</FormControl>
-			<br />
-			<Button
-				onClick={() => getAssessmentOfActivity()}
-				variant="outlined"
-			>
-				Calculate
-			</Button>
-			<br />
-			{co2Total !== 0 && (
-				<div id="co2-total">{co2Total} kg co2e total</div>
-			)}
+				<span>
+					<h1 id="title">Emissions Calculator</h1>
+				</span>
+			</header>
+			<div id="main-container">
+				<div id="main">
+					<FormControl>
+						<InputLabel id="category-select-label">
+							Category
+						</InputLabel>
+						<Select
+							id="category-select"
+							value={category}
+							label="Category"
+							onChange={(e) => setCategory(e.target.value)}
+						>
+							{categories.length !== 0 ? (
+								categories.map((category) => {
+									return (
+										<MenuItem
+											key={category}
+											value={category}
+										>
+											{category}
+										</MenuItem>
+									);
+								})
+							) : (
+								<MenuItem key="loading">loading...</MenuItem>
+							)}
+						</Select>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="activity-select-label">
+							Activity
+						</InputLabel>
+						<Select
+							id="activity-select"
+							value={activityIndex}
+							label="Activity"
+							onChange={(e) => {
+								console.log(e.target.value);
+								const index = parseInt(
+									e.target.value.toString()
+								);
+								setActivityIndex(index);
+								let current_activity = activities[index];
+								let activity_name = current_activity.name
+									.slice(-3)
+									.join(", ");
+								setActivity(activity_name);
+							}}
+						>
+							{activities ? (
+								activities.map((activity, index) => {
+									return (
+										<MenuItem
+											key={activity.id}
+											value={index}
+										>
+											{activity.name.slice(-3).join(", ")}
+										</MenuItem>
+									);
+								})
+							) : (
+								<MenuItem key="loading">
+									Select a category
+								</MenuItem>
+							)}
+						</Select>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="unit-select-label">Unit</InputLabel>
+						<Select
+							id="unit-select"
+							value={unit}
+							label="Unit"
+							onChange={(e) => {
+								setUnit(e.target.value);
+							}}
+						>
+							{units ? (
+								units.map((unit, index) => {
+									return (
+										<MenuItem key={index} value={unit}>
+											{unit}
+										</MenuItem>
+									);
+								})
+							) : (
+								<MenuItem key="loading">
+									Select a category
+								</MenuItem>
+							)}
+						</Select>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="unit-select-label">Region</InputLabel>
+						<TextField
+							id="outlined-basic"
+							value={region}
+							variant="outlined"
+							onChange={(e) => setRegion(e.target.value)}
+						/>
+					</FormControl>
+					<FormControl>
+						<InputLabel id="unit-select-label">Volume</InputLabel>
+						<TextField
+							id="outlined-basic"
+							variant="outlined"
+							type={"number"}
+							value={volume}
+							onChange={(e) =>
+								setVolume(parseInt(e.target.value.toString()))
+							}
+						/>
+					</FormControl>
+					<br />
+					<Button
+						onClick={() => getAssessmentOfActivity()}
+						variant="outlined"
+					>
+						Calculate
+					</Button>
+					<br />
+					{co2Total !== 0 && (
+						<div id="co2-total">{co2Total} kg co2e total</div>
+					)}
+				</div>
+			</div>
 		</>
 	);
 }
