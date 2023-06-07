@@ -110,10 +110,9 @@ function App() {
 					label="Activity"
 					onChange={(e) => {
 						console.log(e.target.value);
-						const index = parseInt(e.target.value);
+						const index = parseInt(e.target.value.toString());
 						setActivityIndex(index);
-						let current_activity =
-							activities[index];
+						let current_activity = activities[index];
 						let activity_name = current_activity.name
 							.slice(-3)
 							.join(", ");
