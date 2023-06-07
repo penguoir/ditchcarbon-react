@@ -65,7 +65,9 @@ function App() {
 				console.log(response);
 				setActivities(response);
 				setActivityIndex(0);
-				setActivity(response[0].name.slice(-3).join(", "));
+				setActivity(activities[activityIndex].name.slice(-3).join(", "));
+				setUnits(activities[activityIndex].available_declared_units);
+				setUnit(units[0])
 			})
 			.catch((err) => console.error(err));
 	};
@@ -78,6 +80,15 @@ function App() {
 		console.log(category);
 		category && getActivities();
 	}, [category, categories]);
+
+	useEffect(() => {
+		console.log(activities[activityIndex]?.available_declared_units)
+		setUnits(activities[activityIndex]?.available_declared_units)
+	}, [activityIndex, activities])
+	
+	useEffect(() => {
+		units && setUnit(units[0])
+	}, [units])
 
 	return (
 		<>
@@ -130,7 +141,30 @@ function App() {
 					) : (
 						<MenuItem key="loading">Select a category</MenuItem>
 					)}
-				</Select>
+				</Select>	
+			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Unit</InputLabel>
+				<Select
+					id="unit-select"
+					value={unit}
+					label="Unit"
+					onChange={(e) => {
+						setUnit(e.target.value)
+					}}
+				>
+					{units ? (
+						units.map((unit, index) => {
+							return (
+								<MenuItem key={index} value={unit}>
+									{unit}
+								</MenuItem>
+							);
+						})
+					) : (
+						<MenuItem key="loading">Select a category</MenuItem>
+					)}
+				</Select>	
 			</FormControl>
 		</>
 	);
