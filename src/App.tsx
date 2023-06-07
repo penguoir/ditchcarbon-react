@@ -69,9 +69,14 @@ function App() {
 
 	const [region, setRegion] = useState<string>("");
 
+
+	const [years, setYears] = useState<number[]>([]);
+	const [year, setYear] = useState<number>();
+
 	const [volume, setVolume] = useState<number>(0);
 
 	const [co2Total, setCo2Total] = useState<number>(0);
+
 
 	const getCategories = async () => {
 		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level", options)
@@ -103,6 +108,8 @@ function App() {
 				);
 				setUnits(activities[activityIndex].available_declared_units);
 				setUnit(units[0]);
+				setYears(activities[activityIndex].available_years);
+				setYear(year);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -220,6 +227,7 @@ function App() {
 								<MenuItem key="loading">
 									Select a category
 								</MenuItem>
+
 							)}
 						</Select>
 					</FormControl>
@@ -244,6 +252,37 @@ function App() {
 							) : (
 								<MenuItem key="loading">
 									Select a category
+
+							);
+						})
+					) : (
+						<MenuItem key="loading">loading...</MenuItem>
+					)}
+				</Select>
+			</FormControl>
+			<FormControl>
+				<InputLabel id="activity-select-label">Activity</InputLabel>
+				<Select
+					id="activity-select"
+					value={activityIndex}
+					label="Activity"
+					onChange={(e) => {
+						console.log(e.target.value);
+						const index = parseInt(e.target.value.toString());
+						setActivityIndex(index);
+						const current_activity = activities[index];
+						const activity_name = current_activity.name
+							.slice(-3)
+							.join(", ");
+						setActivity(activity_name);
+					}}
+				>
+					{activities ? (
+						activities.map((activity, index) => {
+							return (
+								<MenuItem key={activity.id} value={index}>
+									{activity.name.slice(-3).join(", ")}
+
 								</MenuItem>
 							)}
 						</Select>
@@ -280,8 +319,100 @@ function App() {
 					{co2Total !== 0 && (
 						<div id="co2-total">{co2Total} kg co2e total</div>
 					)}
+
 				</div>
 			</div>
+
+				</Select>
+			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Region</InputLabel>
+				<TextField
+					id="outlined-basic"
+					variant="outlined"
+					onChange={(e) => setRegion(e.target.value)}
+				/>
+			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Unit</InputLabel>
+				<Select
+					id="unit-select"
+					value={unit}
+					label="Unit"
+					onChange={(e) => {
+						setUnit(e.target.value);
+					}}
+				>
+					{units ? (
+						units.map((unit, index) => {
+							return (
+								<MenuItem key={index} value={unit}>
+									{unit}
+								</MenuItem>
+							);
+						})
+					) : (
+						<MenuItem key="loading">Select a category</MenuItem>
+					)}
+				</Select>
+			</FormControl>
+			<FormControl>
+
+				<InputLabel id="year-select-label">Year</InputLabel>
+				<Select
+					id="year-select"
+					value={year}
+					label="Year"
+					onChange={(e) => {
+						setYear(Number(e.target.value));
+					}}
+				>
+					{years ? (
+						years.map((year, index) => {
+							return (
+								<MenuItem key={index} value={year}>
+									{year}
+								</MenuItem>
+							);
+						})
+					) : (
+						<MenuItem key="loading">Select the year</MenuItem>
+					)}
+				</Select>
+
+				<InputLabel id="unit-select-label">Region</InputLabel>
+				<TextField
+					id="outlined-basic"
+					value={region}
+					variant="outlined"
+					onChange={(e) => setRegion(e.target.value)}
+				/>
+
+			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Volume</InputLabel>
+				<TextField
+					id="outlined-basic"
+					variant="outlined"
+					type={"number"}
+					value={volume}
+					onChange={(e) =>
+						setVolume(parseInt(e.target.value.toString()))
+					}
+				/>
+			</FormControl>
+			<br />
+			<Button
+				onClick={() => getAssessmentOfActivity()}
+				variant="outlined"
+			>
+				Calculate
+			</Button>
+			<br />
+			{co2Total !== 0 && (
+				<div id="co2-total">{co2Total} kg co2e total</div>
+			)}
+
 		</>
 	);
 }
