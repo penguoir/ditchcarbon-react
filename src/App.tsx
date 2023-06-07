@@ -42,6 +42,8 @@ function App() {
 
 	const [region, setRegion] = useState<string>("");
 
+	const [volume, setVolume] = useState<number>(0);
+
 	const getCategories = async () => {
 		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level", options)
 			.then((response) => response.json())
@@ -76,6 +78,16 @@ function App() {
 			.catch((err) => console.error(err));
 	};
 
+	const getAssessmentOfActivity = async () => {
+		fetch(
+			`https://api.ditchcarbon.com/v1.0/activities/${activities[activityIndex].id}/assessment?region=${region}&declared_unit=${unit}`,
+			options
+		)
+			.then((response) => response.json())
+			.then((response) => console.log(response))
+			.catch((err) => console.error(err));
+	};
+
 	useEffect(() => {
 		getCategories();
 	}, []);
@@ -92,6 +104,7 @@ function App() {
 
 	useEffect(() => {
 		units && setUnit(units[0]);
+		getAssessmentOfActivity();
 	}, [units]);
 
 	return (
@@ -176,6 +189,14 @@ function App() {
 					id="outlined-basic"
 					variant="outlined"
 					onChange={(e) => setRegion(e.target.value)}
+				/>
+			</FormControl>
+			<FormControl>
+				<InputLabel id="unit-select-label">Volume</InputLabel>
+				<TextField
+					id="outlined-basic"
+					variant="outlined"
+					onChange={(e) => setVolume(e.target.value)}
 				/>
 			</FormControl>
 		</>
