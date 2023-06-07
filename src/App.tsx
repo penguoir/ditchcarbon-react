@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
+import { Select, InputLabel, MenuItem, TextField, Button, InputAdornment, OutlinedInput } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 import { createTheme } from "@mui/material/styles";
@@ -266,9 +266,9 @@ function App() {
 					</FormControl>
 					<FormControl>
 						<InputLabel id="volume-select-label">Volume</InputLabel>
-						<TextField
+						<OutlinedInput
+							endAdornment={<InputAdornment position="end">{unit}</InputAdornment>}
 							id="outlined-basic"
-							variant="outlined"
 							type={"number"}
 							value={volume}
 							onChange={(e) =>
