@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem } from "@mui/material";
+import { Select, InputLabel, MenuItem, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 
@@ -165,6 +165,11 @@ function App() {
 						<MenuItem key="loading">Select a category</MenuItem>
 					)}
 				</Select>	
+			</FormControl>
+			<FormControl>
+				<TextField id="outlined-basic" label="Region" variant="outlined" 
+				onChange={(e) => {console.log(e.target.value);}}
+				/>
 			</FormControl>
 		</>
 	);
