@@ -40,6 +40,8 @@ function App() {
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
 
+	const [region, setRegion] = useState<string>("");
+
 	const getCategories = async () => {
 		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level", options)
 			.then((response) => response.json())
@@ -65,9 +67,11 @@ function App() {
 				console.log(response);
 				setActivities(response);
 				setActivityIndex(0);
-				setActivity(activities[activityIndex].name.slice(-3).join(", "));
+				setActivity(
+					activities[activityIndex].name.slice(-3).join(", ")
+				);
 				setUnits(activities[activityIndex].available_declared_units);
-				setUnit(units[0])
+				setUnit(units[0]);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -82,13 +86,13 @@ function App() {
 	}, [category, categories]);
 
 	useEffect(() => {
-		console.log(activities[activityIndex]?.available_declared_units)
-		setUnits(activities[activityIndex]?.available_declared_units)
-	}, [activityIndex, activities])
-	
+		console.log(activities[activityIndex]?.available_declared_units);
+		setUnits(activities[activityIndex]?.available_declared_units);
+	}, [activityIndex, activities]);
+
 	useEffect(() => {
-		units && setUnit(units[0])
-	}, [units])
+		units && setUnit(units[0]);
+	}, [units]);
 
 	return (
 		<>
@@ -141,7 +145,7 @@ function App() {
 					) : (
 						<MenuItem key="loading">Select a category</MenuItem>
 					)}
-				</Select>	
+				</Select>
 			</FormControl>
 			<FormControl>
 				<InputLabel id="unit-select-label">Unit</InputLabel>
@@ -150,7 +154,7 @@ function App() {
 					value={unit}
 					label="Unit"
 					onChange={(e) => {
-						setUnit(e.target.value)
+						setUnit(e.target.value);
 					}}
 				>
 					{units ? (
@@ -164,11 +168,14 @@ function App() {
 					) : (
 						<MenuItem key="loading">Select a category</MenuItem>
 					)}
-				</Select>	
+				</Select>
 			</FormControl>
 			<FormControl>
-				<TextField id="outlined-basic" label="Region" variant="outlined" 
-				onChange={(e) => {console.log(e.target.value);}}
+				<InputLabel id="unit-select-label">Region</InputLabel>
+				<TextField
+					id="outlined-basic"
+					variant="outlined"
+					onChange={(e) => setRegion(e.target.value)}
 				/>
 			</FormControl>
 		</>
