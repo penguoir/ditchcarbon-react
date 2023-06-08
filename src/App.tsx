@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField, Button, InputAdornment, OutlinedInput } from "@mui/material";
+import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 import { createTheme } from "@mui/material/styles";
@@ -68,6 +68,17 @@ function App() {
 	const [unit, setUnit] = useState<string>("");
 
 	const [region, setRegion] = useState<string>("");
+	// const clickHandler = (e:any) => {
+	// 	console.log("Printing e")
+	// 	console.log(e.target.value)
+	// 	setRegion(e.target.value);
+	// 	const newValue = e.target.value;
+	// 	console.log("region");
+	// 	console.log(newValue);
+	// 	console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
+	// 	getCategories();
+	// };
+
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
@@ -76,8 +87,11 @@ function App() {
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
-	const getCategories = async () => {
-		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level", options)
+	const getCategories = async (e:any) => {
+		setRegion(e.target.value);
+		const newValue = e.target.value;
+		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
+		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(e.target.value), options)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response);
@@ -130,9 +144,9 @@ function App() {
 			.catch((err) => console.error(err));
 	};
 
-	useEffect(() => {
-		getCategories();
-	}, []);
+	// useEffect(() => {
+	// 	getCategories();
+	// }, []);
 
 	useEffect(() => {
 		console.log(category);
@@ -164,6 +178,17 @@ function App() {
 			</header>
 			<div id="main-container">
 				<div id="main">
+					{/* Region */}
+					<FormControl>
+						<InputLabel id="region-select-label">Region</InputLabel>
+						<TextField
+							id="outlined-basic"
+							value={region}
+							variant="outlined"
+							onChange={(e) => getCategories(e)}
+						/>
+					</FormControl>
+					{/* Category */}
 					<FormControl>
 						<InputLabel id="category-select-label">
 							Category
@@ -190,6 +215,7 @@ function App() {
 							)}
 						</Select>
 					</FormControl>
+					{/* Activity */}
 					<FormControl>
 						<InputLabel id="activity-select-label">
 							Activity
@@ -229,7 +255,7 @@ function App() {
 							)}
 						</Select>
 					</FormControl>
-
+					{/* Unit */}
 					<FormControl>
 						<InputLabel id="unit-select-label">Unit</InputLabel>
 						<Select
@@ -255,20 +281,12 @@ function App() {
 							)}
 						</Select>
 					</FormControl>
-					<FormControl>
-						<InputLabel id="region-select-label">Region</InputLabel>
-						<TextField
-							id="outlined-basic"
-							value={region}
-							variant="outlined"
-							onChange={(e) => setRegion(e.target.value)}
-						/>
-					</FormControl>
+					{/* Volume */}
 					<FormControl>
 						<InputLabel id="volume-select-label">Volume</InputLabel>
-						<OutlinedInput
-							endAdornment={<InputAdornment position="end">{unit}</InputAdornment>}
+						<TextField
 							id="outlined-basic"
+							variant="outlined"
 							type={"number"}
 							value={volume}
 							onChange={(e) =>
@@ -276,6 +294,7 @@ function App() {
 							}
 						/>
 					</FormControl>
+					{/* Year */}
 					<FormControl>
 						<InputLabel id="year-select-label">Year</InputLabel>
 						<Select
