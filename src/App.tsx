@@ -1,16 +1,33 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
+import {
+	Select,
+	InputLabel,
+	MenuItem,
+	TextField,
+	Button,
+	FormHelperText,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 
+// interface for options
+interface Options {
+	method: string;
+	headers: {
+		accept: string;
+		authorization: string;
+	};
+}
+
 // template for fetch request
-const options = {
+const options:Options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
 		authorization: `Bearer ${import.meta.env.VITE_DITCH_CARBON_API_KEY}`,
 	},
 };
+
 
 // dictionary interface
 interface Dictionary<T> {
@@ -25,12 +42,15 @@ interface Activity {
 	available_declared_units: string[];
 }
 
+// emission factors interface
 interface EmissionFactors {
 	ch4: number;
 	co2: number;
 	co2e: number | null;
 	n2o: number;
 }
+
+// assessment of activity interface
 interface AssessmentOfActivity {
 	region: string;
 	year: number;
@@ -43,8 +63,12 @@ interface AssessmentOfActivity {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ActivityArray extends Array<Activity> {}
 
+// App component
 function App() {
 	// define all states
+
+	const [apiKey, setApiKey] = useState<string>("")
+
 	const [categories, setCategories] = useState<string[]>([]);
 	const [category, setCategory] = useState<string>("");
 
@@ -56,17 +80,7 @@ function App() {
 	const [unit, setUnit] = useState<string>("");
 
 	const [region, setRegion] = useState<string>("");
-	// const clickHandler = (e:any) => {
-	// 	console.log("Printing e")
-	// 	console.log(e.target.value)
-	// 	setRegion(e.target.value);
-	// 	const newValue = e.target.value;
-	// 	console.log("region");
-	// 	console.log(newValue);
-	// 	console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
-	// 	getCategories();
-	// };
-
+	const [regionError, setRegionError] = useState<string>("");
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
@@ -75,14 +89,44 @@ function App() {
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
-	const getCategories = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		setRegion(e.target.value);
-		const newValue = e.target.value;
-		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
-		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(e.target.value), options)
+	// get categories
+	const getCategories = async () => {
+
+		console.log(region)
+
+		// only do api call if length of region greater than or equal to 2
+		if (region.length < 2) return;
+
+		console.log(
+			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
+				region.toString()
+			)
+		);
+
+		fetch(
+			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
+				region
+			),
+			options
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response);
+
+				if (response.length === 0) {
+					// if response is empty, reset all necessary states
+					resetStates();
+
+					// put message under region input field
+					setRegionError(
+						"We currently do not support this region, type any to get all categories."
+					);
+					return;
+				}
+
+				// reset region error
+				setRegionError("");
+
 				setCategories(
 					response.map((item: Dictionary<string>) => {
 						return item.name;
@@ -109,7 +153,7 @@ function App() {
 				setUnits(activities[activityIndex].available_declared_units);
 				setUnit(units[0]);
 				setYears(activities[activityIndex].available_years);
-				console.log(activities[activityIndex])
+				console.log(activities[activityIndex]);
 				setYear(years[0]);
 			})
 			.catch((err) => console.error(err));
@@ -132,9 +176,19 @@ function App() {
 			.catch((err) => console.error(err));
 	};
 
-	// useEffect(() => {
-	// 	getCategories();
-	// }, []);
+	const resetStates = () => {
+		setCategories([]);
+		setCategory("");
+		setActivities([]);
+		setActivity("");
+		setActivityIndex(0);
+		setUnits([]);
+		setUnit("");
+		setYears([]);
+		setYear(0);
+		setVolume(0);
+		setCo2Total(0);
+	};
 
 	useEffect(() => {
 		console.log(category);
@@ -149,6 +203,10 @@ function App() {
 	useEffect(() => {
 		units && setUnit(units[0]);
 	}, [units]);
+
+	useEffect(() => {
+		getCategories();
+	}, [region]);
 
 	return (
 		<>
@@ -166,6 +224,16 @@ function App() {
 			</header>
 			<div id="main-container">
 				<div id="main">
+					{/* API key */}
+					<FormControl>
+						<InputLabel id="api-key-label">API Key</InputLabel>
+						<TextField
+							id="outlined-basic"
+							value={apiKey}
+							variant="outlined"
+							onChange={(e) => setApiKey(e.target.value)}
+						/>
+					</FormControl>
 					{/* Region */}
 					<FormControl>
 						<InputLabel id="region-select-label">Region</InputLabel>
@@ -173,9 +241,14 @@ function App() {
 							id="outlined-basic"
 							value={region}
 							variant="outlined"
-							onChange={(e) => getCategories(e)}
+							onChange={(e) => setRegion(e.target.value.toUpperCase())}
 						/>
 					</FormControl>
+					{regionError && (
+						<FormHelperText id="region-error">
+							{regionError}
+						</FormHelperText>
+					)}
 					{/* Category */}
 					<FormControl>
 						<InputLabel id="category-select-label">
