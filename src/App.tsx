@@ -10,14 +10,24 @@ import {
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 
+// interface for options
+interface Options {
+	method: string;
+	headers: {
+		accept: string;
+		authorization: string;
+	};
+}
+
 // template for fetch request
-const options = {
+const options:Options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
 		authorization: `Bearer ${import.meta.env.VITE_DITCH_CARBON_API_KEY}`,
 	},
 };
+
 
 // dictionary interface
 interface Dictionary<T> {
@@ -56,6 +66,9 @@ interface ActivityArray extends Array<Activity> {}
 // App component
 function App() {
 	// define all states
+
+	const [apiKey, setApiKey] = useState<string>("")
+
 	const [categories, setCategories] = useState<string[]>([]);
 	const [category, setCategory] = useState<string>("");
 
@@ -211,6 +224,16 @@ function App() {
 			</header>
 			<div id="main-container">
 				<div id="main">
+					{/* API key */}
+					<FormControl>
+						<InputLabel id="api-key-label">API Key</InputLabel>
+						<TextField
+							id="outlined-basic"
+							value={apiKey}
+							variant="outlined"
+							onChange={(e) => setApiKey(e.target.value)}
+						/>
+					</FormControl>
 					{/* Region */}
 					<FormControl>
 						<InputLabel id="region-select-label">Region</InputLabel>
