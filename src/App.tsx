@@ -20,11 +20,12 @@ interface Options {
 }
 
 // template for fetch request
-const options:Options = {
+// eslint-disable-next-line prefer-const
+let options:Options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
-		authorization: `Bearer ${import.meta.env.VITE_DITCH_CARBON_API_KEY}`,
+		authorization: `Bearer key`,
 	},
 };
 
@@ -134,7 +135,7 @@ function App() {
 				);
 				setCategory(response[0].name);
 			})
-			.catch((err) => console.error(err));
+			.catch((err) => console.error(err.message));
 	};
 
 	const getActivities = async () => {
@@ -207,6 +208,11 @@ function App() {
 	useEffect(() => {
 		getCategories();
 	}, [region]);
+
+	useEffect(() => {
+		// update options object with new api key after "Bearer "
+		options.headers.authorization = `Bearer ${apiKey}`;
+	}, [apiKey])
 
 	return (
 		<>
