@@ -2,19 +2,6 @@ import { FormControl } from "@mui/base";
 import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
-import { createTheme } from "@mui/material/styles";
-import { purple } from "@mui/material/colors";
-
-const theme = createTheme({
-	palette: {
-		primary: {
-			main: purple[500],
-		},
-		secondary: {
-			main: "#f44336",
-		},
-	},
-});
 
 // template for fetch request
 const options = {
@@ -88,7 +75,7 @@ function App() {
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
-	const getCategories = async (e: React.ChangeEvent<HTMLInputElement>) => {
+	const getCategories = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setRegion(e.target.value);
 		const newValue = e.target.value;
 		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
