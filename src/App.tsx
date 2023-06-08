@@ -25,12 +25,15 @@ interface Activity {
 	available_declared_units: string[];
 }
 
+// emission factors interface
 interface EmissionFactors {
 	ch4: number;
 	co2: number;
 	co2e: number | null;
 	n2o: number;
 }
+
+// assessment of activity interface
 interface AssessmentOfActivity {
 	region: string;
 	year: number;
@@ -43,6 +46,7 @@ interface AssessmentOfActivity {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ActivityArray extends Array<Activity> {}
 
+// App component
 function App() {
 	// define all states
 	const [categories, setCategories] = useState<string[]>([]);
@@ -56,17 +60,6 @@ function App() {
 	const [unit, setUnit] = useState<string>("");
 
 	const [region, setRegion] = useState<string>("");
-	// const clickHandler = (e:any) => {
-	// 	console.log("Printing e")
-	// 	console.log(e.target.value)
-	// 	setRegion(e.target.value);
-	// 	const newValue = e.target.value;
-	// 	console.log("region");
-	// 	console.log(newValue);
-	// 	console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
-	// 	getCategories();
-	// };
-
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
@@ -75,10 +68,15 @@ function App() {
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
+	// get categories
 	const getCategories = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+		// update current region
 		setRegion(e.target.value);
-		const newValue = e.target.value;
-		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
+		
+		// only do api call if length of region is 2
+		if (e.target.value.length !== 2) return;
+		
+		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(region.toString()))
 		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(e.target.value), options)
 			.then((response) => response.json())
 			.then((response) => {
