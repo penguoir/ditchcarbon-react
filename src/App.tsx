@@ -1,5 +1,12 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField, Button } from "@mui/material";
+import {
+	Select,
+	InputLabel,
+	MenuItem,
+	TextField,
+	Button,
+	FormHelperText,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 
@@ -60,6 +67,7 @@ function App() {
 	const [unit, setUnit] = useState<string>("");
 
 	const [region, setRegion] = useState<string>("");
+	const [regionError, setRegionError] = useState<string>("");
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
@@ -69,18 +77,43 @@ function App() {
 	const [co2Total, setCo2Total] = useState<number>(0);
 
 	// get categories
-	const getCategories = async (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		// update current region
-		setRegion(e.target.value);
-		
-		// only do api call if length of region is 2
-		if (e.target.value.length !== 2) return;
-		
-		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(region.toString()))
-		fetch("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(e.target.value), options)
+	const getCategories = async () => {
+
+		console.log(region)
+
+		// only do api call if length of region greater than or equal to 2
+		if (region.length < 2) return;
+
+		console.log(
+			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
+				region.toString()
+			)
+		);
+
+		fetch(
+			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
+				region
+			),
+			options
+		)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response);
+
+				if (response.length === 0) {
+					// if response is empty, reset all necessary states
+					resetStates();
+
+					// put message under region input field
+					setRegionError(
+						"We currently do not support this region, type any to get all categories."
+					);
+					return;
+				}
+
+				// reset region error
+				setRegionError("");
+
 				setCategories(
 					response.map((item: Dictionary<string>) => {
 						return item.name;
@@ -107,7 +140,7 @@ function App() {
 				setUnits(activities[activityIndex].available_declared_units);
 				setUnit(units[0]);
 				setYears(activities[activityIndex].available_years);
-				console.log(activities[activityIndex])
+				console.log(activities[activityIndex]);
 				setYear(years[0]);
 			})
 			.catch((err) => console.error(err));
@@ -130,9 +163,19 @@ function App() {
 			.catch((err) => console.error(err));
 	};
 
-	// useEffect(() => {
-	// 	getCategories();
-	// }, []);
+	const resetStates = () => {
+		setCategories([]);
+		setCategory("");
+		setActivities([]);
+		setActivity("");
+		setActivityIndex(0);
+		setUnits([]);
+		setUnit("");
+		setYears([]);
+		setYear(0);
+		setVolume(0);
+		setCo2Total(0);
+	};
 
 	useEffect(() => {
 		console.log(category);
@@ -147,6 +190,10 @@ function App() {
 	useEffect(() => {
 		units && setUnit(units[0]);
 	}, [units]);
+
+	useEffect(() => {
+		getCategories();
+	}, [region]);
 
 	return (
 		<>
@@ -171,9 +218,14 @@ function App() {
 							id="outlined-basic"
 							value={region}
 							variant="outlined"
-							onChange={(e) => getCategories(e)}
+							onChange={(e) => setRegion(e.target.value.toUpperCase())}
 						/>
 					</FormControl>
+					{regionError && (
+						<FormHelperText id="region-error">
+							{regionError}
+						</FormHelperText>
+					)}
 					{/* Category */}
 					<FormControl>
 						<InputLabel id="category-select-label">
