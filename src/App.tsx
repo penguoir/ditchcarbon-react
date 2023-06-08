@@ -53,6 +53,7 @@ interface AssessmentOfActivity {
 }
 
 // activity array interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface ActivityArray extends Array<Activity> {}
 
 function App() {
@@ -87,7 +88,7 @@ function App() {
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
-	const getCategories = async (e:any) => {
+	const getCategories = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		setRegion(e.target.value);
 		const newValue = e.target.value;
 		console.log("https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(newValue.toString()))
