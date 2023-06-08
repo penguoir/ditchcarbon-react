@@ -1,5 +1,5 @@
 import { FormControl } from "@mui/base";
-import { Select, InputLabel, MenuItem, TextField, Button, InputAdornment, OutlinedInput } from "@mui/material";
+import { Select, InputLabel, MenuItem, TextField, Button, InputAdornment, OutlinedInput, Autocomplete } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
 import { createTheme } from "@mui/material/styles";
@@ -164,7 +164,7 @@ function App() {
 			</header>
 			<div id="main-container">
 				<div id="main">
-					<FormControl>
+					{/* <FormControl>
 						<InputLabel id="category-select-label">
 							Category
 						</InputLabel>
@@ -189,6 +189,18 @@ function App() {
 								<MenuItem key="loading">loading...</MenuItem>
 							)}
 						</Select>
+					</FormControl> */}
+					<FormControl>
+						<InputLabel id="category-select-label">
+							Category
+						</InputLabel>
+						<Autocomplete
+						disablePortal
+						id="combo-box-demo"
+						options={categories}
+						sx={{ width: 300 }}
+						renderInput={(params) => <TextField {...params} label="Category" />}
+						/>
 					</FormControl>
 					<FormControl>
 						<InputLabel id="activity-select-label">
