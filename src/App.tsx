@@ -72,16 +72,20 @@ function App() {
 
 	const [categories, setCategories] = useState<string[]>([]);
 	const [category, setCategory] = useState<string>("");
+	const [categoryDisabled, setCategoryDisabled] = useState<boolean>(true);
 
 	const [activities, setActivities] = useState<ActivityArray>([]);
 	const [activity, setActivity] = useState<string>("Activity");
 	const [activityIndex, setActivityIndex] = useState<number>(0);
+	const [activityDisabled, setActivityDisabled] = useState<boolean>(true);
 
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
+	const [unitDisabled, setUnitDisabled] = useState<boolean>(true);
 
 	const [region, setRegion] = useState<string>("");
 	const [regionError, setRegionError] = useState<string>("");
+	const [regionDisabled, setRegionDisabled] = useState<boolean>(true);
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>();
@@ -194,11 +198,13 @@ function App() {
 	useEffect(() => {
 		console.log(category);
 		category && getActivities();
+		category.length === 0 ? setActivityDisabled(true) : setActivityDisabled(false)
 	}, [category, categories]);
 
 	useEffect(() => {
 		console.log(activities[activityIndex]?.available_declared_units);
 		setUnits(activities[activityIndex]?.available_declared_units);
+		activityIndex >= 0 ? setUnitDisabled(true) : setUnitDisabled(false)
 	}, [activityIndex, activities]);
 
 	useEffect(() => {
@@ -207,11 +213,13 @@ function App() {
 
 	useEffect(() => {
 		getCategories();
+		region.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false)
 	}, [region]);
 
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
+		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false)
 	}, [apiKey])
 
 	return (
@@ -248,6 +256,8 @@ function App() {
 							value={region}
 							variant="outlined"
 							onChange={(e) => setRegion(e.target.value.toUpperCase())}
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={regionDisabled}
 						/>
 					</FormControl>
 					{regionError && (
@@ -265,6 +275,9 @@ function App() {
 							value={category}
 							label="Category"
 							onChange={(e) => setCategory(e.target.value)}
+							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={categoryDisabled}
+							
 						>
 							{categories.length !== 0 ? (
 								categories.map((category) => {
@@ -291,6 +304,8 @@ function App() {
 							id="activity-select"
 							value={activityIndex}
 							label="Activity"
+							{...(activityDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={activityDisabled}
 							onChange={(e) => {
 								console.log(e.target.value);
 								const index = parseInt(
@@ -302,7 +317,8 @@ function App() {
 									.slice(-3)
 									.join(", ");
 								setActivity(activity_name);
-							}}
+							}
+						}
 						>
 							{activities ? (
 								activities.map((activity, index) => {
@@ -329,6 +345,8 @@ function App() {
 							id="unit-select"
 							value={unit}
 							label="Unit"
+							{...(unitDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={unitDisabled}
 							onChange={(e) => {
 								setUnit(e.target.value);
 							}}
