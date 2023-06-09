@@ -103,12 +103,14 @@ function App() {
 			)
 		);
 
-		fetch(
-			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
-				region
-			),
-			options
-		)
+		let api_endpoint =
+			"https://api.ditchcarbon.com/v1.0/activities/top-level";
+
+		// if region !== "ANY", add region to url
+		api_endpoint =
+			region !== "ANY" ? api_endpoint.concat("?region=" + region) : api_endpoint;
+
+		fetch(api_endpoint, options)
 			.then((response) => response.json())
 			.then((response) => {
 				console.log(response);
@@ -134,7 +136,6 @@ function App() {
 				);
 				setCategory(response[0].name);
 			})
-			.catch((err) => console.error(err.message));
 	};
 
 	const getActivities = async () => {
@@ -200,7 +201,7 @@ function App() {
 
 	useEffect(() => {
 		years && setYear(years[0]);
-	},[years])
+	}, [years]);
 
 	useEffect(() => {
 		units && setUnit(units[0]);
