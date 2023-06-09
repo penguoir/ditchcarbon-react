@@ -6,6 +6,7 @@ import {
 	TextField,
 	Button,
 	FormHelperText,
+	Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
@@ -21,14 +22,13 @@ interface Options {
 
 // template for fetch request
 // eslint-disable-next-line prefer-const
-let options:Options = {
+let options: Options = {
 	method: "GET",
 	headers: {
 		accept: "application/json",
 		authorization: `Bearer key`,
 	},
 };
-
 
 // dictionary interface
 interface Dictionary<T> {
@@ -68,13 +68,13 @@ interface ActivityArray extends Array<Activity> {}
 function App() {
 	// define all states
 
-	const [apiKey, setApiKey] = useState<string>("")
+	const [apiKey, setApiKey] = useState<string>("");
 
 	const [categories, setCategories] = useState<string[]>([]);
 	const [category, setCategory] = useState<string>("");
 
 	const [activities, setActivities] = useState<ActivityArray>([]);
-	const [activity, setActivity] = useState<string>("Activity");
+	const [activity, setActivity] = useState<string>("");
 	const [activityIndex, setActivityIndex] = useState<number>(0);
 
 	const [units, setUnits] = useState<string[]>([]);
@@ -84,7 +84,7 @@ function App() {
 	const [regionError, setRegionError] = useState<string>("");
 
 	const [years, setYears] = useState<number[]>([]);
-	const [year, setYear] = useState<number>();
+	const [year, setYear] = useState<number>(2020);
 
 	const [volume, setVolume] = useState<number>(0);
 
@@ -92,8 +92,7 @@ function App() {
 
 	// get categories
 	const getCategories = async () => {
-
-		console.log(region)
+		console.log(region);
 
 		// only do api call if length of region greater than or equal to 2
 		if (region.length < 2) return;
@@ -148,14 +147,6 @@ function App() {
 				console.log(response);
 				setActivities(response);
 				setActivityIndex(0);
-				setActivity(
-					activities[activityIndex].name.slice(-3).join(", ")
-				);
-				setUnits(activities[activityIndex].available_declared_units);
-				setUnit(units[0]);
-				setYears(activities[activityIndex].available_years);
-				console.log(activities[activityIndex]);
-				setYear(years[0]);
 			})
 			.catch((err) => console.error(err));
 	};
@@ -199,7 +190,17 @@ function App() {
 	useEffect(() => {
 		console.log(activities[activityIndex]?.available_declared_units);
 		setUnits(activities[activityIndex]?.available_declared_units);
+		console.log("INDEX: ", activityIndex);
+		console.log("ACTIVITIES: ", activities);
+		console.log(activities[activityIndex]);
+		setActivity(activities[activityIndex]?.name.slice(-3).join(", ") ?? "");
+		setUnits(activities[activityIndex]?.available_declared_units);
+		setYears(activities[activityIndex]?.available_years);
 	}, [activityIndex, activities]);
+
+	useEffect(() => {
+		years && setYear(years[0]);
+	},[years])
 
 	useEffect(() => {
 		units && setUnit(units[0]);
@@ -212,7 +213,7 @@ function App() {
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
-	}, [apiKey])
+	}, [apiKey]);
 
 	return (
 		<>
@@ -247,7 +248,9 @@ function App() {
 							id="outlined-basic"
 							value={region}
 							variant="outlined"
-							onChange={(e) => setRegion(e.target.value.toUpperCase())}
+							onChange={(e) =>
+								setRegion(e.target.value.toUpperCase())
+							}
 						/>
 					</FormControl>
 					{regionError && (
@@ -256,7 +259,7 @@ function App() {
 						</FormHelperText>
 					)}
 					{/* Category */}
-					<FormControl>
+					{/* <FormControl>
 						<InputLabel id="category-select-label">
 							Category
 						</InputLabel>
@@ -281,6 +284,20 @@ function App() {
 								<MenuItem key="loading">loading...</MenuItem>
 							)}
 						</Select>
+					</FormControl> */}
+					<FormControl>
+						<InputLabel id="category-select-label">
+							Category
+						</InputLabel>
+						<Autocomplete
+							disablePortal
+							id="combo-box-demo"
+							options={categories}
+							sx={{ width: 300 }}
+							value={category}
+							renderInput={(params) => <TextField {...params} />}
+							onChange={(_, value) => setCategory(value ?? "")}
+						/>
 					</FormControl>
 					{/* Activity */}
 					<FormControl>
