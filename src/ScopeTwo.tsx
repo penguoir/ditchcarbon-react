@@ -92,29 +92,22 @@ function App() {
 
 	// get categories
 	const getCategories = async () => {
-		console.log(region);
-
 		// only do api call if length of region greater than or equal to 2
 		if (region.length < 2) return;
-
-		console.log(
-			"https://api.ditchcarbon.com/v1.0/activities/top-level?region=".concat(
-				region.toString()
-			)
-		);
 
 		let api_endpoint =
 			"https://api.ditchcarbon.com/v1.0/activities/top-level";
 
 		// if region !== "ANY", add region to url
 		api_endpoint =
-			region !== "ANY" ? api_endpoint.concat("?region=" + region) : api_endpoint;
+			region !== "ANY"
+				? api_endpoint.concat("?region=" + region)
+				: api_endpoint;
 
+		// fetch data
 		fetch(api_endpoint, options)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response);
-
 				if (response.length === 0) {
 					// if response is empty, reset all necessary states
 					resetStates();
@@ -129,46 +122,58 @@ function App() {
 				// reset region error
 				setRegionError("");
 
+				// set categories
 				setCategories(
 					response.map((item: Dictionary<string>) => {
 						return item.name;
 					})
 				);
+
+				// set category
 				setCategory(response[0].name);
-			})
+			});
 	};
 
+	// get activities
 	const getActivities = async () => {
+		// fetch activities based on category
 		fetch(
 			`https://api.ditchcarbon.com/v1.0/activities?name[]=${category}`,
 			options
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response);
+				// set activities
 				setActivities(response);
+
+				// set activity index
 				setActivityIndex(0);
 			})
 			.catch((err) => console.error(err));
 	};
 
+	// get assessment of activity
 	const getAssessmentOfActivity = async () => {
+		// fetch assessment of activity
 		fetch(
 			`https://api.ditchcarbon.com/v1.0/activities/${activities[activityIndex].id}/assessment?region=${region}&declared_unit=${unit}`,
 			options
 		)
 			.then((response) => response.json())
 			.then((response: AssessmentOfActivity) => {
-				console.log(response);
+				// conditionally get co2 emission factor
 				const factor =
 					response.ghg_emission_factors.co2e !== null
 						? response.ghg_emission_factors.co2e
 						: response.ghg_emission_factors.co2;
+
+				// set co2 total
 				setCo2Total(factor * volume);
 			})
 			.catch((err) => console.error(err));
 	};
 
+	// reset all states to their valid reset values
 	const resetStates = () => {
 		setCategories([]);
 		setCategory("");
@@ -184,7 +189,6 @@ function App() {
 	};
 
 	useEffect(() => {
-		console.log(category);
 		category && getActivities();
 	}, [category, categories]);
 
@@ -211,6 +215,8 @@ function App() {
 		getCategories();
 	}, [region]);
 
+	const error = true;
+
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
@@ -227,7 +233,7 @@ function App() {
 					loading="lazy"
 				/>
 				<span>
-					<h1 id="title">Emissions Calculator</h1>
+					<h1 id="title">Scope 2 Emissions Calculator</h1>
 				</span>
 			</header>
 			<div id="main-container">
