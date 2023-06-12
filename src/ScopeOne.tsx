@@ -13,6 +13,8 @@ import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import "./css/App.css";
 import { Options } from "./interfaces/Options";
+import { Dictionary } from "./interfaces/Dictionary";
+
 
 
 // template for fetch request

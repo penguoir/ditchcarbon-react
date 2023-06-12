@@ -24,10 +24,7 @@ let options: Options = {
 	},
 };
 
-// dictionary interface
-interface Dictionary<T> {
-	[Key: string]: T;
-}
+
 
 // activity interface
 interface Activity {
