@@ -15,8 +15,6 @@ import "./css/App.css";
 import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
 
-
-
 // template for fetch request
 // eslint-disable-next-line prefer-const
 let options: Options = {
@@ -26,11 +24,6 @@ let options: Options = {
 		authorization: `Bearer key`,
 	},
 };
-
-// dictionary interface
-interface Dictionary<T> {
-	[Key: string]: T;
-}
 
 // activity interface
 interface Activity {
