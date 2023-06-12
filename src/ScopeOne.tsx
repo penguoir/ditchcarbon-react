@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { filterDataByScope } from "./helpers/filterFunctions";
+import resetStates from "./helpers/resetStates";
 import "./css/App.css";
 
 // interface for options
@@ -112,7 +113,19 @@ function App() {
 			.then((response) => {
 				if (response.length === 0) {
 					// if response is empty, reset all necessary states
-					resetStates();
+					resetStates({
+						setCategories,
+						setCategory,
+						setActivities,
+						setActivity,
+						setActivityIndex,
+						setUnits,
+						setUnit,
+						setYears,
+						setYear,
+						setVolume,
+						setCo2Total,
+					});
 
 					// put message under region input field
 					setRegionError(
@@ -160,7 +173,7 @@ function App() {
 						"There are no Scope 1 emission activities for this category, please choose another."
 					);
 				}
-				
+
 				// set activities
 				setActivities(filteredActivities);
 
@@ -189,21 +202,6 @@ function App() {
 				setCo2Total(factor * volume);
 			})
 			.catch((err) => console.error(err));
-	};
-
-	// reset all states to their valid reset values
-	const resetStates = () => {
-		setCategories([]);
-		setCategory("");
-		setActivities([]);
-		setActivity("");
-		setActivityIndex(0);
-		setUnits([]);
-		setUnit("");
-		setYears([]);
-		setYear(0);
-		setVolume(0);
-		setCo2Total(0);
 	};
 
 	useEffect(() => {
