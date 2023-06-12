@@ -14,7 +14,7 @@ import "./css/App.css";
 // helpers
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
-import { options } from './helpers/apiOptions';
+import { options } from "./helpers/apiOptions";
 import supportedRegions from "./helpers/supportedRegions.json";
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
@@ -165,43 +165,77 @@ function App() {
 			.catch((err) => console.error(err));
 	};
 
+	// useEffects
+
+	// when category or categories changes
 	useEffect(() => {
+		// if category is not empty, get activities
 		category && getActivities();
-		category.length === 0 ? setActivityDisabled(true) : setActivityDisabled(false)
+
+		// if category is empty, disable activity select otherwise enable it
+		category.length === 0
+			? setActivityDisabled(true)
+			: setActivityDisabled(false);
 	}, [category, categories]);
 
+	// when activityIndex or activities changes
 	useEffect(() => {
-		console.log(activities[activityIndex]?.available_declared_units);
+		// udate units array
 		setUnits(activities[activityIndex]?.available_declared_units);
-		console.log("INDEX: ", activityIndex);
-		console.log("ACTIVITIES: ", activities);
-		console.log(activities[activityIndex]);
+
+		// update current activity
 		setActivity(activities[activityIndex]?.name.slice(-3).join(", ") ?? "");
-		setUnits(activities[activityIndex]?.available_declared_units);
+
+		// update years array
 		setYears(activities[activityIndex]?.available_years);
-		activities.length === 0 ? setUnitDisabled(true) : setUnitDisabled(false);
-		activities.length === 0 ? setYearDisabled(true) : setYearDisabled(false);
+
+		// if activities is empty, disable unit select otherwise enable it
+		activities.length === 0
+			? setYearDisabled(true)
+			: setYearDisabled(false);
+		activities.length === 0
+			? setUnitDisabled(true)
+			: setUnitDisabled(false);
 	}, [activityIndex, activities]);
 
+	// when years changes
 	useEffect(() => {
+		// if years is not empty, set year to first year in array
 		years && setYear(years[0]);
 	}, [years]);
 
+	// when units changes
 	useEffect(() => {
+		// if units is not empty, set unit to first unit in array
 		units && setUnit(units[0]);
-		// units && units.length === 0 ? setVolumeDisabled(true) : setVolumeDisabled(false);
-		units ? (units.length === 0 ? setVolumeDisabled(true) : setVolumeDisabled(false)) : setVolumeDisabled(true);
+
+		// if units is empty, disable volume input field otherwise enable it
+		units
+			? units.length === 0
+				? setVolumeDisabled(true)
+				: setVolumeDisabled(false)
+			: setVolumeDisabled(true);
 	}, [units]);
 
+	// when unit changes
 	useEffect(() => {
+		// get categories
 		getCategories();
 	}, [region]);
 
+	// when apiKey changes
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
-		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false);
-		apiKey.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false);
+
+		// if apiKey is empty, disable region select otherwise enable it
+		apiKey.length === 0
+			? setRegionDisabled(true)
+			: setRegionDisabled(false);
+		apiKey.length === 0
+			? setCategoryDisabled(true)
+			: setCategoryDisabled(false);
+		// get categories
 		getCategories();
 	}, [apiKey]);
 
@@ -237,24 +271,20 @@ function App() {
 						<Autocomplete
 							disablePortal
 							id="outlined-basic"
-							sx={{ width: 165 }}
 							options={supportedRegions.regions}
 							value={region}
-							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 165 }} : {})}
+							{...(regionDisabled
+								? {
+										sx: {
+											backgroundColor: "#D3D3D3",
+											width: 165,
+										},
+								  }
+								: { sx: { width: 165 } })}
 							disabled={regionDisabled}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setRegion(value ?? "")}
 						/>
-						{/* <TextField
-							id="outlined-basic"
-							value={region}
-							variant="outlined"
-							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
-							disabled={regionDisabled}
-							onChange={(e) =>
-								setRegion(e.target.value.toUpperCase())
-							}
-						/> */}
 					</FormControl>
 					{regionError && (
 						<FormHelperText id="region-error">
@@ -270,11 +300,17 @@ function App() {
 							disablePortal
 							id="combo-box-demo"
 							options={categories}
-							sx={{ width: 300 }}
 							value={category}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setCategory(value ?? "")}
-							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 300}} : {})}
+							{...(categoryDisabled
+								? {
+										sx: {
+											backgroundColor: "#D3D3D3",
+											width: 300,
+										},
+								  }
+								: { sx: { width: 300 } })}
 							disabled={categoryDisabled}
 						/>
 					</FormControl>
@@ -292,7 +328,9 @@ function App() {
 							id="activity-select"
 							value={activityIndex}
 							label="Activity"
-							{...(activityDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(activityDisabled
+								? { sx: { backgroundColor: "#D3D3D3" } }
+								: {})}
 							disabled={activityDisabled}
 							onChange={(e) => {
 								console.log(e.target.value);
@@ -332,7 +370,9 @@ function App() {
 							id="unit-select"
 							value={unit}
 							label="Unit"
-							{...(unitDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(unitDisabled
+								? { sx: { backgroundColor: "#D3D3D3" } }
+								: {})}
 							disabled={unitDisabled}
 							onChange={(e) => {
 								setUnit(e.target.value);
@@ -361,7 +401,9 @@ function App() {
 							variant="outlined"
 							type={"number"}
 							value={volume}
-							{...(volumeDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(volumeDisabled
+								? { sx: { backgroundColor: "#D3D3D3" } }
+								: {})}
 							disabled={volumeDisabled}
 							onChange={(e) =>
 								setVolume(parseInt(e.target.value.toString()))
@@ -375,7 +417,9 @@ function App() {
 							id="year-select"
 							value={year}
 							label="Year"
-							{...(yearDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(yearDisabled
+								? { sx: { backgroundColor: "#D3D3D3" } }
+								: {})}
 							disabled={yearDisabled}
 							onChange={(e) => {
 								setYear(Number(e.target.value));
