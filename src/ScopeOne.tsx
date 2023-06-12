@@ -195,13 +195,13 @@ function App() {
 
 	useEffect(() => {
 		getCategories();
-		region.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false)
 	}, [region]);
 
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
-		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false)
+		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false);
+		apiKey.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false);
 		getCategories();
 	}, [apiKey]);
 
@@ -239,8 +239,8 @@ function App() {
 							id="outlined-basic"
 							sx={{ width: 165 }}
 							options={supportedRegions.regions}
-							value={supportedRegions.regions}
-							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							value={region}
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 165 }} : {})}
 							disabled={regionDisabled}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setRegion(value ?? "")}
@@ -274,7 +274,7 @@ function App() {
 							value={category}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setCategory(value ?? "")}
-							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 300}} : {})}
 							disabled={categoryDisabled}
 						/>
 					</FormControl>
