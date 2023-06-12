@@ -265,6 +265,14 @@ function App() {
 							onChange={(e) => setApiKey(e.target.value)}
 						/>
 					</FormControl>
+					{apiKey.length === 0 && (
+						<FormHelperText>
+							Don't have one? Head over{" "}
+							<a href="https://ditchcarbon.com/get-started/">
+								here
+							</a>
+						</FormHelperText>
+					)}
 					{/* Region */}
 					<FormControl>
 						<InputLabel id="region-select-label">Region</InputLabel>
