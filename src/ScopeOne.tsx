@@ -15,7 +15,7 @@ import "./css/App.css";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from './helpers/apiOptions';
-import './helpers/supportedRegions.json';
+import supportedRegions from "./helpers/supportedRegions.json";
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
@@ -237,8 +237,11 @@ function App() {
 						<Autocomplete
 							disablePortal
 							id="outlined-basic"
-							options={supportedRegions}
-							value={category}
+							sx={{ width: 165 }}
+							options={supportedRegions.regions}
+							value={supportedRegions.regions}
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={regionDisabled}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setRegion(value ?? "")}
 						/>
