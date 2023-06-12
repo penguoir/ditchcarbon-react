@@ -9,6 +9,7 @@ import {
 	Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { filterDataByScope } from "./helpers/filterFunctions";
 import "./css/App.css";
 
 // interface for options
@@ -76,6 +77,7 @@ function App() {
 	const [activities, setActivities] = useState<ActivityArray>([]);
 	const [activity, setActivity] = useState<string>("");
 	const [activityIndex, setActivityIndex] = useState<number>(0);
+	const [activitiesError, setActivitiesError] = useState<string>("");
 
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
@@ -143,8 +145,26 @@ function App() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
+				console.log(response);
+				// filter activites to just "Scope 1" using helper function
+				const filteredActivities = filterDataByScope(
+					response,
+					"Scope 1"
+				);
+
+				// reset activities error
+				setActivitiesError("");
+
+				//if filteredActivities is empty, update error message
+				if (filteredActivities.length === 0) {
+					setActivitiesError(
+						"There are no Scope 1 emission activities for this category, please choose another."
+					);
+				}
+				console.log(filteredActivities);
+				setActivities(filteredActivities);
+
 				// set activities
-				setActivities(response);
 
 				// set activity index
 				setActivityIndex(0);
@@ -266,32 +286,6 @@ function App() {
 						</FormHelperText>
 					)}
 					{/* Category */}
-					{/* <FormControl>
-						<InputLabel id="category-select-label">
-							Category
-						</InputLabel>
-						<Select
-							id="category-select"
-							value={category}
-							label="Category"
-							onChange={(e) => setCategory(e.target.value)}
-						>
-							{categories.length !== 0 ? (
-								categories.map((category) => {
-									return (
-										<MenuItem
-											key={category}
-											value={category}
-										>
-											{category}
-										</MenuItem>
-									);
-								})
-							) : (
-								<MenuItem key="loading">loading...</MenuItem>
-							)}
-						</Select>
-					</FormControl> */}
 					<FormControl>
 						<InputLabel id="category-select-label">
 							Category
@@ -306,6 +300,11 @@ function App() {
 							onChange={(_, value) => setCategory(value ?? "")}
 						/>
 					</FormControl>
+					{activitiesError && (
+						<FormHelperText id="region-error">
+							{activitiesError}
+						</FormHelperText>
+					)}
 					{/* Activity */}
 					<FormControl>
 						<InputLabel id="activity-select-label">
