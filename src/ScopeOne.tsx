@@ -12,15 +12,8 @@ import React, { useEffect, useState } from "react";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import "./css/App.css";
+import { Options } from "./interfaces/Options";
 
-// interface for options
-interface Options {
-	method: string;
-	headers: {
-		accept: string;
-		authorization: string;
-	};
-}
 
 // template for fetch request
 // eslint-disable-next-line prefer-const
