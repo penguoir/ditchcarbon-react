@@ -12,10 +12,12 @@ import React, { useEffect, useState } from "react";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import "./css/App.css";
+
+// interfaces
 import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
 import { Activity } from "./interfaces/Activity";
-import { EmissionFactors } from "./interfaces/EmissionFactors";
+import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
 
 
 // template for fetch request
@@ -27,15 +29,6 @@ let options: Options = {
 		authorization: `Bearer key`,
 	},
 };
-
-// assessment of activity interface
-interface AssessmentOfActivity {
-	region: string;
-	year: number;
-	declared_unit: string;
-	ghg_emission_factors: EmissionFactors;
-	source_url: string;
-}
 
 // activity array interface
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
