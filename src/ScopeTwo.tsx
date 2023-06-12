@@ -9,25 +9,17 @@ import {
 	Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { filterDataByScope } from "./helpers/filterFunctions";
-import resetStates from "./helpers/resetStates";
 import "./css/App.css";
 
+// helpers
+import { filterDataByScope } from "./helpers/filterFunctions";
+import resetStates from "./helpers/resetStates";
+import { options } from './helpers/apiOptions';
+
 // interfaces
-import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
 import { ActivityArray } from "./interfaces/ActivityArray";
-
-// template for fetch request
-// eslint-disable-next-line prefer-const
-let options: Options = {
-	method: "GET",
-	headers: {
-		accept: "application/json",
-		authorization: `Bearer key`,
-	},
-};
 
 // App component
 function App() {
