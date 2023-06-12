@@ -15,6 +15,7 @@ import "./css/App.css";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from './helpers/apiOptions';
+import supportedRegions from "./helpers/supportedRegions.json";
 
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
@@ -195,13 +196,13 @@ function App() {
 
 	useEffect(() => {
 		getCategories();
-		region.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false);
 	}, [region]);
 
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
 		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false);
+		apiKey.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false);
 		getCategories();
 	}, [apiKey]);
 
@@ -234,15 +235,16 @@ function App() {
 					{/* Region */}
 					<FormControl>
 						<InputLabel id="region-select-label">Region</InputLabel>
-						<TextField
+						<Autocomplete
+							disablePortal
 							id="outlined-basic"
+							sx={{ width: 165 }}
+							options={supportedRegions.regions}
 							value={region}
-							variant="outlined"
-							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 165 }} : {})}
 							disabled={regionDisabled}
-							onChange={(e) =>
-								setRegion(e.target.value.toUpperCase())
-							}
+							renderInput={(params) => <TextField {...params} />}
+							onChange={(_, value) => setRegion(value ?? "")}
 						/>
 					</FormControl>
 					{regionError && (

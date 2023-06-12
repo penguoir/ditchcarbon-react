@@ -15,7 +15,7 @@ import "./css/App.css";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from './helpers/apiOptions';
-import './helpers/supportedRegions.json';
+import supportedRegions from "./helpers/supportedRegions.json";
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
@@ -195,13 +195,13 @@ function App() {
 
 	useEffect(() => {
 		getCategories();
-		region.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false)
 	}, [region]);
 
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
-		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false)
+		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false);
+		apiKey.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false);
 		getCategories();
 	}, [apiKey]);
 
@@ -237,8 +237,11 @@ function App() {
 						<Autocomplete
 							disablePortal
 							id="outlined-basic"
-							options={supportedRegions}
-							value={category}
+							sx={{ width: 165 }}
+							options={supportedRegions.regions}
+							value={region}
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 165 }} : {})}
+							disabled={regionDisabled}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setRegion(value ?? "")}
 						/>
@@ -271,7 +274,7 @@ function App() {
 							value={category}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setCategory(value ?? "")}
-							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3', width: 300}} : {})}
 							disabled={categoryDisabled}
 						/>
 					</FormControl>
