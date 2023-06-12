@@ -16,8 +16,8 @@ import "./css/App.css";
 // interfaces
 import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
-import { Activity } from "./interfaces/Activity";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
+import { ActivityArray } from "./interfaces/ActivityArray";
 
 // template for fetch request
 // eslint-disable-next-line prefer-const
@@ -28,10 +28,6 @@ let options: Options = {
 		authorization: `Bearer key`,
 	},
 };
-
-// activity array interface
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface ActivityArray extends Array<Activity> {}
 
 // App component
 function App() {
