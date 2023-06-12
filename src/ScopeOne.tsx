@@ -15,6 +15,7 @@ import "./css/App.css";
 import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
 import { Activity } from "./interfaces/Activity";
+import { EmissionFactors } from "./interfaces/EmissionFactors";
 
 // template for fetch request
 // eslint-disable-next-line prefer-const
@@ -28,13 +29,7 @@ let options: Options = {
 
 
 
-// emission factors interface
-interface EmissionFactors {
-	ch4: number;
-	co2: number;
-	co2e: number | null;
-	n2o: number;
-}
+
 
 // assessment of activity interface
 interface AssessmentOfActivity {
