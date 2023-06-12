@@ -100,9 +100,9 @@ function App() {
 		let api_endpoint =
 			"https://api.ditchcarbon.com/v1.0/activities/top-level";
 
-		// if region !== "ANY", add region to url
+		// if region !== "GLOBAL", add region to url
 		api_endpoint =
-			region !== "ANY"
+			region !== "GLOBAL"
 				? api_endpoint.concat("?region=" + region)
 				: api_endpoint;
 
@@ -116,7 +116,7 @@ function App() {
 
 					// put message under region input field
 					setRegionError(
-						"We currently do not support this region, type any to get all categories."
+						"We currently do not support this region, type global to get all categories."
 					);
 					return;
 				}
