@@ -15,7 +15,7 @@ import "./css/App.css";
 import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from './helpers/apiOptions';
-
+import './helpers/supportedRegions.json';
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
@@ -234,7 +234,15 @@ function App() {
 					{/* Region */}
 					<FormControl>
 						<InputLabel id="region-select-label">Region</InputLabel>
-						<TextField
+						<Autocomplete
+							disablePortal
+							id="outlined-basic"
+							options={supportedRegions}
+							value={category}
+							renderInput={(params) => <TextField {...params} />}
+							onChange={(_, value) => setRegion(value ?? "")}
+						/>
+						{/* <TextField
 							id="outlined-basic"
 							value={region}
 							variant="outlined"
@@ -243,7 +251,7 @@ function App() {
 							onChange={(e) =>
 								setRegion(e.target.value.toUpperCase())
 							}
-						/>
+						/> */}
 					</FormControl>
 					{regionError && (
 						<FormHelperText id="region-error">
