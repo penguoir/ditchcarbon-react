@@ -14,6 +14,8 @@ import resetStates from "./helpers/resetStates";
 import "./css/App.css";
 import { Options } from "./interfaces/Options";
 import { Dictionary } from "./interfaces/Dictionary";
+import { Activity } from "./interfaces/Activity";
+
 
 // template for fetch request
 // eslint-disable-next-line prefer-const
@@ -24,14 +26,6 @@ let options: Options = {
 		authorization: `Bearer key`,
 	},
 };
-
-// activity interface
-interface Activity {
-	id: string;
-	name: string[];
-	available_years: number[];
-	available_declared_units: string[];
-}
 
 // emission factors interface
 interface EmissionFactors {

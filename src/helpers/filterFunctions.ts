@@ -1,9 +1,4 @@
-interface Activity {
-	id: string;
-	name: string[];
-	available_years: number[];
-	available_declared_units: string[];
-  }
+import { Activity } from "../interfaces/Activity";
 
 export const filterDataByScope = (activities: Activity[], scope:string): Activity[] => {
 	const filteredData = activities.filter((activity) => {
