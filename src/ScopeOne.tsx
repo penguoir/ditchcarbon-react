@@ -145,7 +145,6 @@ function App() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				console.log(response);
 				// filter activites to just "Scope 1" using helper function
 				const filteredActivities = filterDataByScope(
 					response,
@@ -161,10 +160,9 @@ function App() {
 						"There are no Scope 1 emission activities for this category, please choose another."
 					);
 				}
-				console.log(filteredActivities);
-				setActivities(filteredActivities);
-
+				
 				// set activities
+				setActivities(filteredActivities);
 
 				// set activity index
 				setActivityIndex(0);
@@ -235,8 +233,6 @@ function App() {
 		getCategories();
 	}, [region]);
 
-	const error = true;
-
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
@@ -301,7 +297,7 @@ function App() {
 						/>
 					</FormControl>
 					{activitiesError && (
-						<FormHelperText id="region-error">
+						<FormHelperText id="activities-error">
 							{activitiesError}
 						</FormHelperText>
 					)}
