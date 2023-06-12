@@ -82,7 +82,7 @@ function App() {
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
 
-	const [region, setRegion] = useState<string>("");
+	const [region, setRegion] = useState<string>("GLOBAL");
 	const [regionError, setRegionError] = useState<string>("");
 
 	const [years, setYears] = useState<number[]>([]);
@@ -236,6 +236,8 @@ function App() {
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
+
+		getCategories();
 	}, [apiKey]);
 
 	return (
