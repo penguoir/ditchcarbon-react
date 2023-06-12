@@ -73,22 +73,28 @@ function App() {
 
 	const [categories, setCategories] = useState<string[]>([]);
 	const [category, setCategory] = useState<string>("");
+	const [categoryDisabled, setCategoryDisabled] = useState<boolean>(true);
 
 	const [activities, setActivities] = useState<ActivityArray>([]);
 	const [activity, setActivity] = useState<string>("");
 	const [activityIndex, setActivityIndex] = useState<number>(0);
 	const [activitiesError, setActivitiesError] = useState<string>("");
+	const [activityDisabled, setActivityDisabled] = useState<boolean>(true);
 
 	const [units, setUnits] = useState<string[]>([]);
 	const [unit, setUnit] = useState<string>("");
+	const [unitDisabled, setUnitDisabled] = useState<boolean>(true);
 
 	const [region, setRegion] = useState<string>("GLOBAL");
 	const [regionError, setRegionError] = useState<string>("");
+	const [regionDisabled, setRegionDisabled] = useState<boolean>(true);
 
 	const [years, setYears] = useState<number[]>([]);
 	const [year, setYear] = useState<number>(2020);
 
 	const [volume, setVolume] = useState<number>(0);
+	const [volumeDisabled, setVolumeDisabled] = useState<boolean>(true);
+	const [yearDisabled, setYearDisabled] = useState<boolean>(true);
 
 	const [co2Total, setCo2Total] = useState<number>(0);
 
@@ -208,6 +214,7 @@ function App() {
 
 	useEffect(() => {
 		category && getActivities();
+		category.length === 0 ? setActivityDisabled(true) : setActivityDisabled(false)
 	}, [category, categories]);
 
 	useEffect(() => {
@@ -219,6 +226,8 @@ function App() {
 		setActivity(activities[activityIndex]?.name.slice(-3).join(", ") ?? "");
 		setUnits(activities[activityIndex]?.available_declared_units);
 		setYears(activities[activityIndex]?.available_years);
+		activities.length === 0 ? setUnitDisabled(true) : setUnitDisabled(false);
+		activities.length === 0 ? setYearDisabled(true) : setYearDisabled(false);
 	}, [activityIndex, activities]);
 
 	useEffect(() => {
@@ -227,16 +236,19 @@ function App() {
 
 	useEffect(() => {
 		units && setUnit(units[0]);
+		// units && units.length === 0 ? setVolumeDisabled(true) : setVolumeDisabled(false);
+		units ? (units.length === 0 ? setVolumeDisabled(true) : setVolumeDisabled(false)) : setVolumeDisabled(true);
 	}, [units]);
 
 	useEffect(() => {
 		getCategories();
+		region.length === 0 ? setCategoryDisabled(true) : setCategoryDisabled(false)
 	}, [region]);
 
 	useEffect(() => {
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
-
+		apiKey.length === 0 ? setRegionDisabled(true) : setRegionDisabled(false)
 		getCategories();
 	}, [apiKey]);
 
@@ -273,6 +285,8 @@ function App() {
 							id="outlined-basic"
 							value={region}
 							variant="outlined"
+							{...(regionDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={regionDisabled}
 							onChange={(e) =>
 								setRegion(e.target.value.toUpperCase())
 							}
@@ -296,6 +310,8 @@ function App() {
 							value={category}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setCategory(value ?? "")}
+							{...(categoryDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={categoryDisabled}
 						/>
 					</FormControl>
 					{activitiesError && (
@@ -312,6 +328,8 @@ function App() {
 							id="activity-select"
 							value={activityIndex}
 							label="Activity"
+							{...(activityDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={activityDisabled}
 							onChange={(e) => {
 								console.log(e.target.value);
 								const index = parseInt(
@@ -350,6 +368,8 @@ function App() {
 							id="unit-select"
 							value={unit}
 							label="Unit"
+							{...(unitDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={unitDisabled}
 							onChange={(e) => {
 								setUnit(e.target.value);
 							}}
@@ -377,6 +397,8 @@ function App() {
 							variant="outlined"
 							type={"number"}
 							value={volume}
+							{...(volumeDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={volumeDisabled}
 							onChange={(e) =>
 								setVolume(parseInt(e.target.value.toString()))
 							}
@@ -389,6 +411,8 @@ function App() {
 							id="year-select"
 							value={year}
 							label="Year"
+							{...(yearDisabled ? { sx : {backgroundColor: '#D3D3D3'}} : {})}
+							disabled={yearDisabled}
 							onChange={(e) => {
 								setYear(Number(e.target.value));
 							}}
