@@ -16,11 +16,15 @@ import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from "./helpers/apiOptions";
 import supportedRegions from "./helpers/supportedRegions.json";
+import scopeTwoCategories from "./data/scopeTwoCategories.json";
+
 
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
 import { AssessmentOfActivity } from "./interfaces/AssessmentOfActivity";
 import { ActivityArray } from "./interfaces/ActivityArray";
+import { CategoryItem } from "./interfaces/CategoryItem";
+
 
 // App component
 function App() {
@@ -99,15 +103,40 @@ function App() {
 				// reset region error
 				setRegionError("");
 
+				const responseNames = response.map(
+					(obj: CategoryItem) => obj.name
+				);
+				const scopeOneNames = scopeTwoCategories.map(
+					(obj: CategoryItem) => obj.name
+				);
+
+				console.log(response);
+				console.log(scopeTwoCategories);
+
+				console.log(responseNames);
+				console.log(scopeOneNames);
+
+				const commonNames = responseNames.filter((name: string) =>
+					scopeOneNames.includes(name)
+				);
+
+				console.log(commonNames);
+
+				const overlap = response.filter((obj: CategoryItem) =>
+					commonNames.includes(obj.name)
+				);
+
+				console.log(overlap);
+
 				// set categories
 				setCategories(
-					response.map((item: Dictionary<string>) => {
+					overlap.map((item: Dictionary<string>) => {
 						return item.name;
 					})
 				);
 
 				// set category
-				setCategory(response[0].name);
+				setCategory(overlap[0].name);
 			});
 	};
 
