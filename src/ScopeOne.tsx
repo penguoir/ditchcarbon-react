@@ -134,7 +134,7 @@ function App() {
 				);
 
 				// set category
-				setCategory(response[0].name);
+				setCategory(overlap[0].name);
 			});
 	};
 
