@@ -448,7 +448,7 @@ function App() {
 								: {})}
 							disabled={volumeDisabled}
 							onChange={(e) =>
-								setVolume(parseInt(e.target.value.toString()))
+								setVolume(Number(e.target.value.toString()))
 							}
 						/>
 					</FormControl>
