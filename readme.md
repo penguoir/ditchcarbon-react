@@ -1,4 +1,4 @@
-## Auto calculator for scope 1 emissions using DitchCarbon API
+## Auto calculator for scope 1 and 2 emissions using DitchCarbon API
 
 ### Prerequisites
 - Node JS
