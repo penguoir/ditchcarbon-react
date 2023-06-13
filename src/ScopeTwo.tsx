@@ -136,6 +136,8 @@ function App() {
 					);
 				}
 
+				console.log(response)
+
 				// set activities
 				setActivities(filteredActivities);
 
