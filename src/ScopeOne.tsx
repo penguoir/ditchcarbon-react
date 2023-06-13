@@ -124,8 +124,10 @@ function App() {
 					commonNames.includes(obj.name)
 				);
 
-				if (commonNames.length === 0){
-					setRegionError("There are no scope 1 activities for this region, please choose another.")
+				if (commonNames.length === 0) {
+					setRegionError(
+						"There are no scope 1 activities for this region, please choose another."
+					);
 				}
 
 				console.log(overlap);
@@ -274,13 +276,15 @@ function App() {
 	return (
 		<>
 			<header>
-				<img
-					width="283"
-					height="38"
-					src="https://ditchcarbon.com/wp-content/uploads/2021/05/Group-119.svg"
-					alt=""
-					loading="lazy"
-				/>
+				<a href="https://ditchcarbon.com/">
+					<img
+						width="283"
+						height="38"
+						src="https://ditchcarbon.com/wp-content/uploads/2021/05/Group-119.svg"
+						alt=""
+						loading="lazy"
+					/>
+				</a>
 				<span>
 					<h1 id="title">Scope 1 Emissions Calculator</h1>
 				</span>
