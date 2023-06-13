@@ -122,6 +122,10 @@ function App() {
 
 				console.log(commonNames);
 
+				if (commonNames.length === 0){
+					setRegionError("There are no scope 1 activities for this region, please choose another.")
+				}
+
 				const overlap = response.filter((obj: CategoryItem) =>
 					commonNames.includes(obj.name)
 				);

@@ -124,6 +124,10 @@ function App() {
 					commonNames.includes(obj.name)
 				);
 
+				if (commonNames.length === 0){
+					setRegionError("There are no scope 1 activities for this region, please choose another.")
+				}
+
 				console.log(overlap);
 
 				// set categories
