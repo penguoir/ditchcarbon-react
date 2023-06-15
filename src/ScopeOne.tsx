@@ -27,6 +27,7 @@ import { CategoryItem } from "./interfaces/CategoryItem";
 // App component
 function App() {
 	// define all states
+	const [scope, setScope] = useState<number>(0);
 
 	const [apiKey, setApiKey] = useState<string>("");
 
@@ -291,6 +292,22 @@ function App() {
 			</header>
 			<div id="main-container">
 				<div id="main">
+					{/* Scope */}
+					<FormControl>
+						<InputLabel id="unit-select-label">Scope</InputLabel>
+						<Select
+							id="unit-select"
+							value={scope}
+							label="Scope"
+							
+							onChange={(e) => {
+								setScope(Number(e.target.value.toString()));
+							}}
+						>
+						<MenuItem value={1}>Scope 1</MenuItem>
+						<MenuItem value={2}>Scope 2</MenuItem>
+						</Select>
+					</FormControl>
 					{/* API key */}
 					<FormControl>
 						<InputLabel id="api-key-label">API Key</InputLabel>
