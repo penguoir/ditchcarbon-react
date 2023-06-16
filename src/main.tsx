@@ -8,17 +8,9 @@ import {
 	RouterProvider,
 } from "react-router-dom";
 import ScopeOne from "./ScopeOne";
-import ScopeTwo from "./ScopeTwo";
-import Root from "./Root";
 
 const router = createBrowserRouter(
-	createRoutesFromElements(
-		<>
-      <Route path="/" element={<Root />} />
-			<Route path="/scope-1" element={<ScopeOne />} />
-			<Route path="/scope-2" element={<ScopeTwo />} />
-		</>
-	)
+	createRoutesFromElements(<Route path="/" element={<ScopeOne />} />)
 );
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

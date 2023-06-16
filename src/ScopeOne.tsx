@@ -293,7 +293,7 @@ function App() {
 					/>
 				</a>
 				<span>
-					<h1 id="title">Scope 1 Emissions Calculator</h1>
+					<h1 id="title">Emissions Calculator by Scope</h1>
 				</span>
 			</header>
 			<div id="main-container">
