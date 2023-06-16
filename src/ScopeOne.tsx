@@ -7,6 +7,7 @@ import {
 	Button,
 	FormHelperText,
 	Autocomplete,
+	ScopedCssBaseline,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
@@ -17,6 +18,7 @@ import resetStates from "./helpers/resetStates";
 import { options } from "./helpers/apiOptions";
 import supportedRegions from "./helpers/supportedRegions.json";
 import scopeOneCategories from "./data/scopeOneCategories.json";
+import scopeTwoCategories from "./data/scopeTwoCategories.json";
 
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
@@ -26,8 +28,10 @@ import { CategoryItem } from "./interfaces/CategoryItem";
 
 // App component
 function App() {
+	const scopes = [scopeOneCategories, scopeTwoCategories];
+
 	// define all states
-	const [scope, setScope] = useState<number>(0);
+	const [scope, setScope] = useState<number>(1);
 
 	const [apiKey, setApiKey] = useState<string>("");
 
@@ -105,18 +109,19 @@ function App() {
 				const responseNames = response.map(
 					(obj: CategoryItem) => obj.name
 				);
-				const scopeOneNames = scopeOneCategories.map(
+				const scopeNames = scopes[scope - 1].map(
 					(obj: CategoryItem) => obj.name
 				);
 
 				console.log(response);
-				console.log(scopeOneCategories);
+				console.log("scope: " + scope);
+				console.log(scopes[scope - 1]);
 
-				console.log(responseNames);
-				console.log(scopeOneNames);
+				// console.log(responseNames);
+				// console.log(scopeNames);
 
 				const commonNames = responseNames.filter((name: string) =>
-					scopeOneNames.includes(name)
+					scopeNames.includes(name)
 				);
 
 				console.log(commonNames);
@@ -127,7 +132,7 @@ function App() {
 
 				if (commonNames.length === 0) {
 					setRegionError(
-						"There are no scope 1 activities for this region, please choose another."
+						`There are no scope ${scope} activities for this region, please choose another.`
 					);
 				}
 
@@ -157,7 +162,7 @@ function App() {
 				// filter activites to just "Scope 1" using helper function
 				const filteredActivities = filterDataByScope(
 					response,
-					"Scope 1"
+					`Scope ${scope}`
 				);
 
 				// reset activities error
@@ -260,6 +265,7 @@ function App() {
 
 	// when apiKey changes
 	useEffect(() => {
+		console.log(scope);
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
 
@@ -271,8 +277,8 @@ function App() {
 			? setCategoryDisabled(true)
 			: setCategoryDisabled(false);
 		// get categories
-		getCategories();
-	}, [apiKey]);
+		apiKey.length !== 0 && getCategories();
+	}, [apiKey, scope]);
 
 	return (
 		<>
@@ -299,13 +305,12 @@ function App() {
 							id="unit-select"
 							value={scope}
 							label="Scope"
-							
 							onChange={(e) => {
 								setScope(Number(e.target.value.toString()));
 							}}
 						>
-						<MenuItem value={1}>Scope 1</MenuItem>
-						<MenuItem value={2}>Scope 2</MenuItem>
+							<MenuItem value={1}>Scope 1</MenuItem>
+							<MenuItem value={2}>Scope 2</MenuItem>
 						</Select>
 					</FormControl>
 					{/* API key */}
