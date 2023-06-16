@@ -1,5 +1,7 @@
 import { FormControl } from "@mui/base";
 import {
+	Alert,
+	AlertTitle,
 	Select,
 	InputLabel,
 	MenuItem,
@@ -514,9 +516,18 @@ function App() {
 						Calculate
 					</Button>
 					<br />
-					{co2Total !== 0 && (
-						<div id="co2-total">{co2Total} kg co2e total</div>
+					{/* {co2Total !== 0 && (
+						<div id="co2-total">{co2Total.toFixed(2)} kg CO2e total</div>
+					)} */}
+					<Alert severity="info">
+						<AlertTitle>Emission Details:</AlertTitle>
+						{co2Total === 0 && (
+						<div id="co2-total"> Enter Data to get kg CO2e total</div>
 					)}
+						{co2Total !== 0 && (
+						<div id="co2-total">{co2Total.toFixed(2)} kg CO2e total</div>
+					)}
+					</Alert>
 				</div>
 			</div>
 		</>
