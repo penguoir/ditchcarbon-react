@@ -7,6 +7,7 @@ import {
 	Button,
 	FormHelperText,
 	Autocomplete,
+	ScopedCssBaseline,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
@@ -16,6 +17,7 @@ import { filterDataByScope } from "./helpers/filterFunctions";
 import resetStates from "./helpers/resetStates";
 import { options } from "./helpers/apiOptions";
 import supportedRegions from "./helpers/supportedRegions.json";
+import scopeOneCategories from "./data/scopeOneCategories.json";
 import scopeTwoCategories from "./data/scopeTwoCategories.json";
 
 // interfaces
@@ -26,7 +28,10 @@ import { CategoryItem } from "./interfaces/CategoryItem";
 
 // App component
 function App() {
+	const scopes = [scopeOneCategories, scopeTwoCategories];
+
 	// define all states
+	const [scope, setScope] = useState<number>(1);
 
 	const [apiKey, setApiKey] = useState<string>("");
 
@@ -104,31 +109,32 @@ function App() {
 				const responseNames = response.map(
 					(obj: CategoryItem) => obj.name
 				);
-				const scopeOneNames = scopeTwoCategories.map(
+				const scopeNames = scopes[scope - 1].map(
 					(obj: CategoryItem) => obj.name
 				);
 
 				console.log(response);
-				console.log(scopeTwoCategories);
+				console.log("scope: " + scope);
+				console.log(scopes[scope - 1]);
 
-				console.log(responseNames);
-				console.log(scopeOneNames);
+				// console.log(responseNames);
+				// console.log(scopeNames);
 
 				const commonNames = responseNames.filter((name: string) =>
-					scopeOneNames.includes(name)
+					scopeNames.includes(name)
 				);
 
 				console.log(commonNames);
 
-				if (commonNames.length === 0) {
-					setRegionError(
-						"There are no scope 1 activities for this region, please choose another."
-					);
-				}
-
 				const overlap = response.filter((obj: CategoryItem) =>
 					commonNames.includes(obj.name)
 				);
+
+				if (commonNames.length === 0) {
+					setRegionError(
+						`There are no scope ${scope} activities for this region, please choose another.`
+					);
+				}
 
 				console.log(overlap);
 
@@ -153,10 +159,10 @@ function App() {
 		)
 			.then((response) => response.json())
 			.then((response) => {
-				// filter activites to just "Scope 2" using helper function
+				// filter activites to just "Scope 1" using helper function
 				const filteredActivities = filterDataByScope(
 					response,
-					"Scope 2"
+					`Scope ${scope}`
 				);
 
 				// reset activities error
@@ -165,11 +171,9 @@ function App() {
 				//if filteredActivities is empty, update error message
 				if (filteredActivities.length === 0) {
 					setActivitiesError(
-						"There are no Scope 2 emission activities for this category, please choose another."
+						"There are no Scope 1 emission activities for this category, please choose another."
 					);
 				}
-
-				console.log(response);
 
 				// set activities
 				setActivities(filteredActivities);
@@ -261,6 +265,7 @@ function App() {
 
 	// when apiKey changes
 	useEffect(() => {
+		console.log(scope);
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
 
@@ -272,8 +277,8 @@ function App() {
 			? setCategoryDisabled(true)
 			: setCategoryDisabled(false);
 		// get categories
-		getCategories();
-	}, [apiKey]);
+		apiKey.length !== 0 && getCategories();
+	}, [apiKey, scope]);
 
 	return (
 		<>
@@ -288,11 +293,26 @@ function App() {
 					/>
 				</a>
 				<span>
-					<h1 id="title">Scope 2 Emissions Calculator</h1>
+					<h1 id="title">Emissions Calculator by Scope</h1>
 				</span>
 			</header>
 			<div id="main-container">
 				<div id="main">
+					{/* Scope */}
+					<FormControl>
+						<InputLabel id="unit-select-label">Scope</InputLabel>
+						<Select
+							id="unit-select"
+							value={scope}
+							label="Scope"
+							onChange={(e) => {
+								setScope(Number(e.target.value.toString()));
+							}}
+						>
+							<MenuItem value={1}>Scope 1</MenuItem>
+							<MenuItem value={2}>Scope 2</MenuItem>
+						</Select>
+					</FormControl>
 					{/* API key */}
 					<FormControl>
 						<InputLabel id="api-key-label">API Key</InputLabel>
@@ -306,10 +326,7 @@ function App() {
 					{apiKey.length === 0 && (
 						<FormHelperText>
 							Don't have one? Head over{" "}
-							<a
-								target="_blank"
-								href="https://ditchcarbon.com/get-started/"
-							>
+							<a href="https://ditchcarbon.com/get-started/">
 								here
 							</a>
 						</FormHelperText>
@@ -350,12 +367,17 @@ function App() {
 							id="combo-box-demo"
 							options={categories}
 							value={category}
-							{...(categoryDisabled
-								? { sx: { backgroundColor: "#D3D3D3" } }
-								: { sx: { width: 300 } })}
-							disabled={categoryDisabled}
 							renderInput={(params) => <TextField {...params} />}
 							onChange={(_, value) => setCategory(value ?? "")}
+							{...(categoryDisabled
+								? {
+										sx: {
+											backgroundColor: "#D3D3D3",
+											width: 300,
+										},
+								  }
+								: { sx: { width: 300 } })}
+							disabled={categoryDisabled}
 						/>
 					</FormControl>
 					{activitiesError && (
