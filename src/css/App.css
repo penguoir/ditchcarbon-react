@@ -26,3 +26,11 @@ button {
     /* background: var(--background)!important; */
     border:  1px solid var(--highlight)!important;
 }
+
+.MuiPaper-root > * {
+    font-size: 1.3rem!important;
+}
+
+.MuiPaper-root {
+    margin-bottom: 2rem;
+}
