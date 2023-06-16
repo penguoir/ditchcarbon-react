@@ -1,7 +1,5 @@
 import { FormControl } from "@mui/base";
 import {
-	Alert,
-	AlertTitle,
 	Select,
 	InputLabel,
 	MenuItem,
@@ -9,7 +7,6 @@ import {
 	Button,
 	FormHelperText,
 	Autocomplete,
-	ScopedCssBaseline,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./css/App.css";
@@ -20,7 +17,6 @@ import resetStates from "./helpers/resetStates";
 import { options } from "./helpers/apiOptions";
 import supportedRegions from "./helpers/supportedRegions.json";
 import scopeOneCategories from "./data/scopeOneCategories.json";
-import scopeTwoCategories from "./data/scopeTwoCategories.json";
 
 // interfaces
 import { Dictionary } from "./interfaces/Dictionary";
@@ -30,10 +26,8 @@ import { CategoryItem } from "./interfaces/CategoryItem";
 
 // App component
 function App() {
-	const scopes = [scopeOneCategories, scopeTwoCategories];
-
 	// define all states
-	const [scope, setScope] = useState<number>(1);
+	const [scope, setScope] = useState<number>(0);
 
 	const [apiKey, setApiKey] = useState<string>("");
 
@@ -111,19 +105,18 @@ function App() {
 				const responseNames = response.map(
 					(obj: CategoryItem) => obj.name
 				);
-				const scopeNames = scopes[scope - 1].map(
+				const scopeOneNames = scopeOneCategories.map(
 					(obj: CategoryItem) => obj.name
 				);
 
 				console.log(response);
-				console.log("scope: " + scope);
-				console.log(scopes[scope - 1]);
+				console.log(scopeOneCategories);
 
-				// console.log(responseNames);
-				// console.log(scopeNames);
+				console.log(responseNames);
+				console.log(scopeOneNames);
 
 				const commonNames = responseNames.filter((name: string) =>
-					scopeNames.includes(name)
+					scopeOneNames.includes(name)
 				);
 
 				console.log(commonNames);
@@ -134,7 +127,7 @@ function App() {
 
 				if (commonNames.length === 0) {
 					setRegionError(
-						`There are no scope ${scope} activities for this region, please choose another.`
+						"There are no scope 1 activities for this region, please choose another."
 					);
 				}
 
@@ -164,7 +157,7 @@ function App() {
 				// filter activites to just "Scope 1" using helper function
 				const filteredActivities = filterDataByScope(
 					response,
-					`Scope ${scope}`
+					"Scope 1"
 				);
 
 				// reset activities error
@@ -267,7 +260,6 @@ function App() {
 
 	// when apiKey changes
 	useEffect(() => {
-		console.log(scope);
 		// update options object with new api key after "Bearer "
 		options.headers.authorization = `Bearer ${apiKey}`;
 
@@ -279,8 +271,8 @@ function App() {
 			? setCategoryDisabled(true)
 			: setCategoryDisabled(false);
 		// get categories
-		apiKey.length !== 0 && getCategories();
-	}, [apiKey, scope]);
+		getCategories();
+	}, [apiKey]);
 
 	return (
 		<>
@@ -295,7 +287,7 @@ function App() {
 					/>
 				</a>
 				<span>
-					<h1 id="title">Emissions Calculator by Scope</h1>
+					<h1 id="title">Scope 1 Emissions Calculator</h1>
 				</span>
 			</header>
 			<div id="main-container">
@@ -307,12 +299,13 @@ function App() {
 							id="unit-select"
 							value={scope}
 							label="Scope"
+							
 							onChange={(e) => {
 								setScope(Number(e.target.value.toString()));
 							}}
 						>
-							<MenuItem value={1}>Scope 1</MenuItem>
-							<MenuItem value={2}>Scope 2</MenuItem>
+						<MenuItem value={1}>Scope 1</MenuItem>
+						<MenuItem value={2}>Scope 2</MenuItem>
 						</Select>
 					</FormControl>
 					{/* API key */}
@@ -516,18 +509,9 @@ function App() {
 						Calculate
 					</Button>
 					<br />
-					{/* {co2Total !== 0 && (
-						<div id="co2-total">{co2Total.toFixed(2)} kg CO2e total</div>
-					)} */}
-					<Alert severity="info">
-						<AlertTitle>Emission Details:</AlertTitle>
-						{co2Total === 0 && (
-						<div id="co2-total"> Enter Data to get kg CO2e total</div>
-					)}
-						{co2Total !== 0 && (
+					{co2Total !== 0 && (
 						<div id="co2-total">{co2Total.toFixed(2)} kg CO2e total</div>
 					)}
-					</Alert>
 				</div>
 			</div>
 		</>
