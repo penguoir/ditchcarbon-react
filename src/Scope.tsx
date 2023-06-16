@@ -9,9 +9,9 @@ import {
 	Button,
 	FormHelperText,
 	Autocomplete,
-	ScopedCssBaseline,
+	
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import "./css/App.css";
 
 // helpers
@@ -43,6 +43,7 @@ function App() {
 
 	const [activities, setActivities] = useState<ActivityArray>([]);
 	const [activity, setActivity] = useState<string>("");
+	console.log(activity)
 	const [activityIndex, setActivityIndex] = useState<number>(0);
 	const [activitiesError, setActivitiesError] = useState<string>("");
 	const [activityDisabled, setActivityDisabled] = useState<boolean>(true);
