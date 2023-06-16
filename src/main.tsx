@@ -7,10 +7,10 @@ import {
 	Route,
 	RouterProvider,
 } from "react-router-dom";
-import ScopeOne from "./ScopeOne";
+import Scope from "./Scope";
 
 const router = createBrowserRouter(
-	createRoutesFromElements(<Route path="/" element={<ScopeOne />} />)
+	createRoutesFromElements(<Route path="/" element={<Scope />} />)
 );
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
